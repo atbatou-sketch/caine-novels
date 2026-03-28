@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, X } from 'lucide-react';
 
-export default function CaineChat() {
+export default function CaineChat({ readingContext }: { readingContext?: string }) {
   const [isIdle, setIsIdle] = useState(true);
   const [caineMessage, setCaineMessage] = useState("");
   const [isInputOpen, setIsInputOpen] = useState(false);
@@ -15,37 +15,26 @@ export default function CaineChat() {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   
   const constraintsRef = useRef(null);
-  const idleTimerRef = useRef<NodeJS.Timeout | null>(null);
   const lastEffectRef = useRef<string>("");
 
-  const resetIdleTimer = () => {
-    if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
-    idleTimerRef.current = setTimeout(() => {
-      setIsIdle(true);
-      setIsInputOpen(false);
-      setCaineMessage("");
-      // إرجاع كين إلى مكانه الافتراضي (0,0) في الزاوية اليمنى
-      setPosition({ x: 0, y: 0 });
-      
-      if (typeof window !== 'undefined') {
-        document.body.style.transform = "none";
-        document.body.style.filter = "none";
-        document.body.style.animation = "none";
-        document.body.style.backgroundColor = "";
-        document.body.style.color = "";
-      }
-    }, 20000); // العودة لنقطة حمراء بعد 20 ثانية من الصمت
+  const closeCaine = () => {
+    setIsIdle(true);
+    setIsInputOpen(false);
+    setCaineMessage("");
+    // إرجاع كين إلى مكانه الافتراضي (0,0) في الزاوية اليمنى
+    setPosition({ x: 0, y: 0 });
+    
+    if (typeof window !== 'undefined') {
+      document.body.style.transform = "none";
+      document.body.style.filter = "none";
+      document.body.style.animation = "none";
+      document.body.style.backgroundColor = "";
+      document.body.style.color = "";
+    }
   };
-
-  useEffect(() => {
-    return () => {
-      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
-    };
-  }, []);
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    resetIdleTimer();
     if (!inputText.trim()) return;
 
     // كين يفكر
@@ -59,6 +48,9 @@ export default function CaineChat() {
     try {
       const formData = new FormData();
       formData.append("message", tempText);
+      if (readingContext) {
+        formData.append("readingContext", readingContext);
+      }
 
       const res = await fetch("/api/chat", {
         method: "POST",
@@ -89,7 +81,6 @@ export default function CaineChat() {
       setCaineMessage("الشبكة تحترق!! السيرفر انفجر!! لا يمكنني الاتصال بالذكاء الاصطناعي الآن! 🔥");
     } finally {
       setIsLoading(false);
-      resetIdleTimer();
     }
   };
 
@@ -237,7 +228,8 @@ export default function CaineChat() {
               dir="rtl"
             >
               <button 
-                onClick={() => { setIsInputOpen(false); resetIdleTimer(); }}
+                onClick={() => { setIsInputOpen(false); }}
+                title="إغلاق المحادثة"
                 className="absolute -top-3 -right-3 bg-red-600 text-white rounded-full p-1 hover:bg-red-700 shadow-md"
               >
                 <X size={16} />
@@ -246,7 +238,7 @@ export default function CaineChat() {
                 <input
                   type="text"
                   value={inputText}
-                  onChange={(e) => { setInputText(e.target.value); resetIdleTimer(); }}
+                  onChange={(e) => { setInputText(e.target.value); }}
                   placeholder="تحدث مع كين..."
                   autoFocus
                   disabled={isLoading}
@@ -282,14 +274,28 @@ export default function CaineChat() {
                   window.speechSynthesis.speak(utterance);
                 }
             }}
-            className="w-12 h-12 md:w-16 md:h-16 bg-red-600 rounded-full cursor-pointer transition-transform transform hover:scale-110 shadow-[0_0_30px_rgba(220,38,38,1)] animate-pulse"
-          />
-        ) : (
-          <div 
-            onClick={() => { if(!isInputOpen) { setIsInputOpen(true); setCaineMessage(""); resetIdleTimer(); } }}
-            className="w-40 h-40 md:w-56 md:h-56 relative group transition-transform transform hover:scale-110"
+            className="w-12 h-12 md:w-16 md:h-16 bg-red-600 rounded-full cursor-pointer transition-transform transform hover:scale-110 shadow-[0_0_30px_rgba(220,38,38,1)] animate-pulse flex items-center justify-center"
+            title="أيقظ كين"
           >
-            <img src="/caine.png" alt="Caine" className="w-full h-full object-contain filter drop-shadow-[0_15px_20px_rgba(0,0,0,0.5)] select-none" draggable="false" />
+            <span className="text-white text-xs font-bold opacity-50">Caine</span>
+          </div>
+        ) : (
+          <div className="relative">
+            {/* زر إعادة كين لوضع الخمول */}
+            <button
+               onClick={(e) => { e.stopPropagation(); closeCaine(); }}
+               className="absolute -top-2 left-2 bg-gray-900 border-2 border-red-600 text-red-500 rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600 hover:text-white transition-colors z-50 shadow-md font-bold text-xs"
+               title="نوم (إرجاعه لنقطة)"
+            >
+              Zz
+            </button>
+            <div 
+              onClick={() => { if(!isInputOpen) { setIsInputOpen(true); setCaineMessage(""); } }}
+              className="w-40 h-40 md:w-56 md:h-56 relative group transition-transform transform hover:scale-110 cursor-pointer"
+              title="تحدث معي!"
+            >
+              <img src="/caine.png" alt="Caine" className="w-full h-full object-contain filter drop-shadow-[0_15px_20px_rgba(0,0,0,0.5)] select-none" draggable="false" />
+            </div>
           </div>
         )}
       </motion.div>
