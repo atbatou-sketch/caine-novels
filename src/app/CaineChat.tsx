@@ -15,6 +15,7 @@ export default function CaineChat({ readingContext }: { readingContext?: string 
   const [position, setPosition] = useState({ x: 0, y: 0 });
   
   const constraintsRef = useRef(null);
+  const caineRef = useRef<HTMLDivElement>(null);
   const lastEffectRef = useRef<string>("");
 
   const closeCaine = () => {
@@ -24,12 +25,12 @@ export default function CaineChat({ readingContext }: { readingContext?: string 
     // إرجاع كين إلى مكانه الافتراضي (0,0) في الزاوية اليمنى
     setPosition({ x: 0, y: 0 });
     
-    if (typeof window !== 'undefined') {
-      document.body.style.transform = "none";
-      document.body.style.filter = "none";
-      document.body.style.animation = "none";
-      document.body.style.backgroundColor = "";
-      document.body.style.color = "";
+    if (caineRef.current) {
+      caineRef.current.style.transform = "none";
+      caineRef.current.style.filter = "none";
+      caineRef.current.style.animation = "none";
+      caineRef.current.style.backgroundColor = "";
+      caineRef.current.style.color = "";
     }
   };
 
@@ -70,30 +71,28 @@ export default function CaineChat({ readingContext }: { readingContext?: string 
           applyVisualEffects();
       } else {
           // تنظيف أي تأثير متبقي للأسئلة العادية
-          document.body.style.transform = "none";
-          document.body.style.filter = "none";
-          document.body.style.animation = "none";
-          document.body.style.backgroundColor = "";
-          document.body.style.color = "";
-      }
-
-    } catch (err) {
-      setCaineMessage("الشبكة تحترق!! السيرفر انفجر!! لا يمكنني الاتصال بالذكاء الاصطناعي الآن! 🔥");
+            if (caineRef.current) {
+              caineRef.current.style.transform = "none";
+              caineRef.current.style.filter = "none";
+              caineRef.current.style.animation = "none";
+              caineRef.current.style.backgroundColor = "";
+              caineRef.current.style.color = "";
+            }
     } finally {
       setIsLoading(false);
     }
   };
 
   const applyVisualEffects = () => {
-    if (typeof window !== 'undefined') {
-      const body = document.body;
+    if (caineRef.current) {
+      const caineElement = caineRef.current;
       
       // إعادة ضبط أي تأثيرات قديمة
-      body.style.transform = "none";
-      body.style.filter = "none";
-      body.style.animation = "none";
-      body.style.backgroundColor = "";
-      body.style.color = "";
+      caineElement.style.transform = "none";
+      caineElement.style.filter = "none";
+      caineElement.style.animation = "none";
+      caineElement.style.backgroundColor = "";
+      caineElement.style.color = "";
 
       const effectsList = ["shake", "rotate", "invert", "fade", "rainbow", "glitch", "hack", "spin", "swing"];
       
@@ -103,39 +102,39 @@ export default function CaineChat({ readingContext }: { readingContext?: string 
       lastEffectRef.current = chosenEffect;
 
       if (chosenEffect === "shake") {
-        body.style.animation = "shake 0.5s infinite";
-        setTimeout(() => { body.style.animation = ""; }, 2000);
+        caineElement.style.animation = "shake 0.5s infinite";
+        setTimeout(() => { if(caineRef.current) caineRef.current.style.animation = ""; }, 2000);
       } else if (chosenEffect === "rotate") {
-        body.style.transition = "transform 1s ease-in-out";
-        body.style.transform = "rotate(180deg)";
-        setTimeout(() => { body.style.transform = "none"; }, 4000);
+        caineElement.style.transition = "transform 1s ease-in-out";
+        caineElement.style.transform = "rotate(180deg)";
+        setTimeout(() => { if(caineRef.current) caineRef.current.style.transform = "none"; }, 4000);
       } else if (chosenEffect === "invert") {
-        body.style.transition = "filter 0.5s ease-in-out";
-        body.style.filter = "invert(1) hue-rotate(180deg)";
-        setTimeout(() => { body.style.filter = "none"; }, 3000);
+        caineElement.style.transition = "filter 0.5s ease-in-out";
+        caineElement.style.filter = "invert(1) hue-rotate(180deg)";
+        setTimeout(() => { if(caineRef.current) caineRef.current.style.filter = "none"; }, 3000);
       } else if (chosenEffect === "fade") {
-        body.style.transition = "opacity 1s ease-in-out";
-        body.style.opacity = "0.1";
-        setTimeout(() => { body.style.opacity = "1"; }, 3000);
+        caineElement.style.transition = "opacity 1s ease-in-out";
+        caineElement.style.opacity = "0.1";
+        setTimeout(() => { if(caineRef.current) caineRef.current.style.opacity = "1"; }, 3000);
       } else if (chosenEffect === "rainbow") {
-        body.style.animation = "rainbowBg 3s infinite";
-        setTimeout(() => { body.style.animation = ""; }, 6000);
+        caineElement.style.animation = "rainbowBg 3s infinite";
+        setTimeout(() => { if(caineRef.current) caineRef.current.style.animation = ""; }, 6000);
       } else if (chosenEffect === "glitch") {
-        body.style.animation = "glitch 0.2s infinite";
-        body.style.filter = "contrast(200%) grayscale(100%)";
-        setTimeout(() => { body.style.animation = ""; body.style.filter = "none"; }, 1500);
+        caineElement.style.animation = "glitch 0.2s infinite";
+        caineElement.style.filter = "contrast(200%) grayscale(100%)";
+        setTimeout(() => { if(caineRef.current) { caineRef.current.style.animation = ""; caineRef.current.style.filter = "none"; } }, 1500);
       } else if (chosenEffect === "hack") {
-        const originalBg = body.style.backgroundColor;
-        body.style.backgroundColor = "#001100";
-        body.style.color = "#00ff00";
-        body.style.fontFamily = "monospace";
-        setTimeout(() => { body.style.backgroundColor = originalBg; body.style.color = ""; body.style.fontFamily = ""; }, 3000);
+        const originalBg = caineElement.style.backgroundColor;
+        caineElement.style.backgroundColor = "#001100";
+        caineElement.style.color = "#00ff00";
+        caineElement.style.fontFamily = "monospace";
+        setTimeout(() => { if(caineRef.current) { caineRef.current.style.backgroundColor = originalBg; caineRef.current.style.color = ""; caineRef.current.style.fontFamily = ""; } }, 3000);
       } else if (chosenEffect === "spin") {
-        body.style.animation = "spin 0.5s linear infinite";
-        setTimeout(() => { body.style.animation = ""; }, 2000);
+        caineElement.style.animation = "spin 0.5s linear infinite";
+        setTimeout(() => { if(caineRef.current) caineRef.current.style.animation = ""; }, 2000);
       } else if (chosenEffect === "swing") {
-        body.style.animation = "swing 3s ease-in-out infinite alternate";
-        setTimeout(() => { body.style.animation = ""; }, 6000);
+        caineElement.style.animation = "swing 3s ease-in-out infinite alternate";
+        setTimeout(() => { if(caineRef.current) caineRef.current.style.animation = ""; }, 6000);
       }
     }
   };
@@ -185,18 +184,20 @@ export default function CaineChat({ readingContext }: { readingContext?: string 
       `}</style>
       <div className="fixed inset-0 pointer-events-none z-[100]" ref={constraintsRef} />
       <motion.div
+        ref={caineRef}
         drag={!isIdle}
         dragConstraints={constraintsRef}
         dragElastic={0.2}
-        // استخدام animate للتحكم المطلق بموقعه عند العودة لحالة الخمول
+        // استخدام style لتحديث الموقع فورا مع frame-motion وتجنب مشاكل drag
+        style={!isIdle ? undefined : { x: 0, y: 0 }}
         animate={isIdle ? { x: 0, y: 0 } : { x: position.x, y: position.y }}
         onDragEnd={(event, info) => {
-           // تحديث الإحداثيات عند نهاية سحبه ليبقى فيها إلا لو عاد لخمول
+           // تحديث الإحداثيات عند نهاية سحبه
            if (!isIdle) {
                setPosition({ x: position.x + info.offset.x, y: position.y + info.offset.y });
            }
         }}
-        transition={isIdle ? { type: "spring", stiffness: 300, damping: 20 } : { type: "spring", stiffness: 300, damping: 20 }}
+        transition={{ type: "spring", stiffness: 300, damping: 20 }}
         className={`fixed bottom-10 right-10 pointer-events-auto flex flex-col items-center z-[101] ${isIdle ? '' : 'cursor-grab active:cursor-grabbing'}`}
       >
         <AnimatePresence>
@@ -274,11 +275,9 @@ export default function CaineChat({ readingContext }: { readingContext?: string 
                   window.speechSynthesis.speak(utterance);
                 }
             }}
-            className="w-12 h-12 md:w-16 md:h-16 bg-red-600 rounded-full cursor-pointer transition-transform transform hover:scale-110 shadow-[0_0_30px_rgba(220,38,38,1)] animate-pulse flex items-center justify-center"
+            className="w-12 h-12 md:w-16 md:h-16 bg-red-600 rounded-full cursor-pointer transition-transform transform hover:scale-110 shadow-[0_0_30px_rgba(220,38,38,1)] animate-pulse"
             title="أيقظ كين"
-          >
-            <span className="text-white text-xs font-bold opacity-50">Caine</span>
-          </div>
+          />
         ) : (
           <div className="relative">
             {/* زر إعادة كين لوضع الخمول */}
