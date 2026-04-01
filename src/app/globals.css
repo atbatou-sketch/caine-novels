@@ -24,3 +24,67 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@font-face { font-family: 'TheMixArab'; src: url('/TheMixArab.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'DGModal3at'; src: url('/DGModal3at.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'Cairo'; src: url('/Cairo.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'HSIshraq'; src: url('/HSIshraq.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'Tachkili'; src: url('/Tachkili.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'VIPHala'; src: url('/VIPHala.otf') format('opentype'); font-display: swap; }
+
+
+.font-cairo { font-family: 'Cairo', sans-serif !important; }
+.font-themix { font-family: 'TheMixArab', sans-serif !important; }
+.font-dg { font-family: 'DGModal3at', sans-serif !important; }
+.font-ishraq { font-family: 'HSIshraq', sans-serif !important; }
+.font-tachkili { font-family: 'Tachkili', sans-serif !important; }
+.font-viphala { font-family: 'VIPHala', sans-serif !important; }
+
+
+
+/* 🦇 جدار حماية كين - التحديث الجديد 🦇 */
+body, .protected-content {
+  -webkit-user-select: none !important;
+  /* Ultimate manual grabbing protection */
+  -webkit-touch-callout: none !important; 
+  -webkit-user-drag: none !important;
+  -khtml-user-drag: none !important;
+  -moz-user-drag: none !important;
+  -o-user-drag: none !important;
+  outline: none !important;
+  -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
+  -khtml-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  -o-user-select: none !important;
+  user-select: none !important;
+  -webkit-touch-callout: none !important;
+  -webkit-user-drag: none !important;
+}
+
+/* السماح فقط لبعض الحقول الأساسية مثل الكتابة والبحث بالنسخ أو التحديد */
+input, textarea, [contenteditable="true"] {
+  -webkit-user-select: text !important;
+  -khtml-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+  -o-user-select: text !important;
+  user-select: text !important;
+}
+
+/* طبقة عمياء فوق النصوص لمنع التحديد اليدوي (Mobile Long Press & Desktop Clicks) */
+.novel-content-shield {
+    position: relative;
+}
+.novel-content-shield::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    /* Transparent but blocks interactions */
+    background: transparent;
+    pointer-events: auto; /* Catches the clicks */
+}
