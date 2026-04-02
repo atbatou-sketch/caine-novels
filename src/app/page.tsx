@@ -30,7 +30,7 @@ export default function Home() {
       {activeTab !== 'profile' && (
         <header className="px-6 py-6 flex justify-between items-center">
           <h1 className="text-2xl font-bold text-white tracking-wide flex items-center gap-2">
-            <img src="/gg.png" alt="كين الجبار" className="w-32 h-32 object-contain drop-shadow-[0_0_20px_rgba(220,38,38,1)]" /> كين ستوديو
+            <img src="/gg.png" alt="كين الجبار" className="w-32 h-32 object-contain drop-shadow-[0_0_20px_rgba(220,38,38,1)]" /> روايات كين
           </h1>
         </header>
       )}
