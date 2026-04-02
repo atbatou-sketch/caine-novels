@@ -389,7 +389,7 @@ export default function CaineChat({ readingContext }: { readingContext?: string 
                 setIsInputOpen(false);
                 setCaineMessage("مرحباً! لقد عدت! 💥 كيف يمكنني مساعدتك؟ ✨");
             }}
-            className="w-8 h-8 md:w-10 md:h-10 bg-red-600 rounded-full cursor-pointer transition-transform transform hover:scale-110 shadow-[0_0_30px_rgba(220,38,38,1)] animate-pulse"
+            className="w-10 h-10 md:w-12 md:h-12 bg-red-600 rounded-full cursor-pointer transition-transform transform hover:scale-110 shadow-[0_0_30px_rgba(220,38,38,1)] animate-pulse"
             title="أيقظ كين"
           />
         ) : (
